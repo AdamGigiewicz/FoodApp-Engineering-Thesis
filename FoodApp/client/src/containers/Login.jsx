@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { LoginBg, Logo } from '../assets';
 import { LoginInput } from '../components';
-import { FaEnvelope, FaLock } from '../assets/icons';
+import { FaEnvelope, FaLock, FcGoogle } from '../assets/icons';
 import { motion } from 'framer-motion';
 import { buttonClick } from '../animations';
 
@@ -18,10 +18,6 @@ const Login = () => {
 
       {/* content box */}
       <div className="flex flex-col items-center bg-lightOverlay w-[80%] md:w-508 h-full z-10 backdrop-blur-md p-4 px-4 py-12 gap-6">
-        <div className="flex items-center justify-start gap-4 w-full">
-          {/*<img src={Logo} className="w-8" alt=""/> */}
-          <p className="text-headingColor font-semibold text-2xl">Restauracja Wirtuozeria</p>
-        </div>
 
         {/* Welcome text */}
         <p className="text-3xl font-semibold text-headingColor">Witaj ponownie!</p>
@@ -84,6 +80,18 @@ const Login = () => {
             {isSignUp ? 'Załóż konto' : 'Zaloguj się'}
           </motion.button>
         </div>
+
+        <div className="flex items-center justify-between gap-16">
+          <div className='w-24 h-[1px] rounded-md bg-white'></div>
+          <p className="text-white">lub</p>
+          <div className='w-24 h-[1px] rounded-md bg-white'></div>
+        </div>
+
+        <motion.div {...buttonClick} className="flex items-center justify-center px-20 py-2 bg-lightOverlay backdrop-blur-md cursor-pointer rounded-3xl gap-4">
+          <FcGoogle className="text-3xl"/>
+          <p className="capitalize text-base">Zaloguj się przez Google</p>
+        </motion.div>
+
       </div>
     </div>
   );
