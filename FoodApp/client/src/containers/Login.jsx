@@ -5,11 +5,30 @@ import { FaEnvelope, FaLock, FcGoogle } from '../assets/icons';
 import { motion } from 'framer-motion';
 import { buttonClick } from '../animations';
 
+import {getAuth, signInWithPopup, GoogleAuthProvider} from "firebase/auth"
+import {app} from "../config/firebase.config"
+
+
 const Login = () => {
   const [userEmail, setUserEmail] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  const firebaseAuth = getAuth(app)
+  const provider = new GoogleAuthProvider();
+
+  const loginWithGoogle = async () => {
+    await signInWithPopup(firebaseAuth, provider).then(userCred => {
+      firebaseAuth.onAuthStateChanged(cred =>{
+        if(cred){
+          cred.getIdToken().then(token =>{
+            console.log(token);
+          })
+        }
+      })
+    })
+  }
 
   return (
     <div className="w-screen h-screen relative overflow-hidden flex">
@@ -87,7 +106,9 @@ const Login = () => {
           <div className='w-24 h-[1px] rounded-md bg-white'></div>
         </div>
 
-        <motion.div {...buttonClick} className="flex items-center justify-center px-20 py-2 bg-lightOverlay backdrop-blur-md cursor-pointer rounded-3xl gap-4">
+        <motion.div {...buttonClick} className="flex items-center justify-center px-20 py-2 bg-lightOverlay backdrop-blur-md cursor-pointer rounded-3xl gap-4"
+        onClick={loginWithGoogle}
+        >
           <FcGoogle className="text-3xl"/>
           <p className="capitalize text-base">Zaloguj się przez Google</p>
         </motion.div>
