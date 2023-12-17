@@ -7,6 +7,7 @@ import { buttonClick } from '../animations';
 
 import {getAuth, signInWithPopup, GoogleAuthProvider} from "firebase/auth"
 import {app} from "../config/firebase.config"
+import { validateUserJWTToken } from '../api';
 
 
 const Login = () => {
@@ -19,16 +20,18 @@ const Login = () => {
   const provider = new GoogleAuthProvider();
 
   const loginWithGoogle = async () => {
-    await signInWithPopup(firebaseAuth, provider).then(userCred => {
-      firebaseAuth.onAuthStateChanged(cred =>{
+    await signInWithPopup(firebaseAuth, provider).then((userCred) => {
+      firebaseAuth.onAuthStateChanged((cred) =>{
         if(cred){
-          cred.getIdToken().then(token =>{
-            console.log(token);
-          })
+          cred.getIdToken().then((token) =>{
+              validateUserJWTToken(token).then(data => {
+                console.log(data);
+              })
+          });
         }
-      })
-    })
-  }
+      });
+    });
+  };
 
   return (
     <div className="w-screen h-screen relative overflow-hidden flex">
