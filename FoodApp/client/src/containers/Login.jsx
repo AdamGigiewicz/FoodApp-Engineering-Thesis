@@ -5,7 +5,7 @@ import { FaEnvelope, FaLock, FcGoogle } from '../assets/icons';
 import { motion } from 'framer-motion';
 import { buttonClick } from '../animations';
 
-import {getAuth, signInWithPopup, GoogleAuthProvider} from "firebase/auth"
+import {getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword} from "firebase/auth"
 import {app} from "../config/firebase.config"
 import { validateUserJWTToken } from '../api';
 
@@ -26,13 +26,44 @@ const Login = () => {
           cred.getIdToken().then((token) =>{
               validateUserJWTToken(token).then(data => {
                 console.log(data);
-              })
+              });
           });
         }
       });
     });
   };
-
+  
+  const SignUpWithEmailPass = async () => {
+    if (userEmail === "" || password === "" || confirmPassword === "") {
+      // Display alert message or handle the empty fields
+    } else {
+      if (password === confirmPassword) {
+        try {
+          const cred = await createUserWithEmailAndPassword(firebaseAuth, userEmail, password);
+          
+          firebaseAuth.onAuthStateChanged((user) => {
+            if (user) {
+              user.getIdToken().then((token) => {
+                validateUserJWTToken(token).then((data) => {
+                  console.log(data);
+                  // You can perform further actions after successful sign-up here
+                });
+              });
+            }
+          });
+  
+          console.log("Equal");
+        } catch (error) {
+          // Handle errors during user creation (e.g., display an alert)
+          console.error("Error creating user:", error.message);
+        }
+      } else {
+        // Display alert message or handle password mismatch
+      }
+    }
+  };
+  
+  
   return (
     <div className="w-screen h-screen relative overflow-hidden flex">
       {/* background img */}
@@ -98,6 +129,7 @@ const Login = () => {
           <motion.button
             {...buttonClick}
             className="w-full px-4 py-2 rounded-md bg-red-400 cursor-pointer text-white text-xl capitalize hover:bg-red-500 transition-all duration-150"
+            onClick={SignUpWithEmailPass}
           >
             {isSignUp ? 'Załóż konto' : 'Zaloguj się'}
           </motion.button>

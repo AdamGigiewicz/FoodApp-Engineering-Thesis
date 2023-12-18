@@ -10,7 +10,7 @@ const express = require("express")
 const app = express();
 
 
-//Body parser for our JSON data
+//Body parser for JSON data
 app.use(express.json());
 
 //Cross orgin
