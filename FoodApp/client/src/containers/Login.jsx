@@ -126,13 +126,22 @@ const Login = () => {
           )}
 
           {/* button section */}
+          {isSignUp ? (
           <motion.button
             {...buttonClick}
             className="w-full px-4 py-2 rounded-md bg-red-400 cursor-pointer text-white text-xl capitalize hover:bg-red-500 transition-all duration-150"
             onClick={SignUpWithEmailPass}
           >
-            {isSignUp ? 'Załóż konto' : 'Zaloguj się'}
+          Zarejestruj
           </motion.button>
+        ) : (
+          <motion.button
+            {...buttonClick}
+            className="w-full px-4 py-2 rounded-md bg-red-400 cursor-pointer text-white text-xl capitalize hover:bg-red-500 transition-all duration-150"
+          >
+          Zaloguj się
+          </motion.button>
+        )}
         </div>
 
         <div className="flex items-center justify-between gap-16">
