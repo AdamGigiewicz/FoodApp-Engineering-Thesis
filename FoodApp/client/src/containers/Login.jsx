@@ -37,7 +37,7 @@ const Login = () => {
     });
   };
 
-  
+
   
   const SignUpWithEmailPass = async () => {
     if (userEmail === "" || password === "" || confirmPassword === "") {
