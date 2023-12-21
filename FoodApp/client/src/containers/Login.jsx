@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { LoginBg, Logo } from '../assets';
 import { LoginInput } from '../components';
 import { FaEnvelope, FaLock, FcGoogle } from '../assets/icons';
@@ -9,6 +9,8 @@ import {useNavigate} from "react-router-dom";
 import {getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword} from "firebase/auth"
 import {app} from "../config/firebase.config"
 import { validateUserJWTToken } from '../api';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserDetails } from '../context/actions/userActions';
 
 
 const Login = () => {
@@ -21,6 +23,15 @@ const Login = () => {
   const provider = new GoogleAuthProvider();
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const user = useSelector((state) => state.user)
+
+  useEffect(() => {
+    if(user) {
+      navigate("/" , {replace: true});
+    }
+  }, [user,navigate]);
 
   const loginWithGoogle = async () => {
     await signInWithPopup(firebaseAuth, provider).then((userCred) => {
@@ -28,7 +39,7 @@ const Login = () => {
         if(cred){
           cred.getIdToken().then((token) =>{
               validateUserJWTToken(token).then(data => {
-                console.log(data);
+                dispatch(setUserDetails(data));
               });
               navigate("/", {replace: true });
           });
@@ -41,7 +52,6 @@ const Login = () => {
   
   const SignUpWithEmailPass = async () => {
     if (userEmail === "" || password === "" || confirmPassword === "") {
-      // Display alert message or handle the empty fields
     } else {
       if (password === confirmPassword) {
         try {
@@ -51,8 +61,7 @@ const Login = () => {
             if (user) {
               user.getIdToken().then((token) => {
                 validateUserJWTToken(token).then((data) => {
-                  console.log(data);
-                  // You can perform further actions after successful sign-up here
+                  dispatch(setUserDetails(data));
                 });
               });
             }
@@ -60,11 +69,10 @@ const Login = () => {
   
           console.log("Equal");
         } catch (error) {
-          // Handle errors during user creation (e.g., display an alert)
           console.error("Error creating user:", error.message);
         }
       } else {
-        // Display alert message or handle password mismatch
+        
       }
     }
   };
@@ -76,8 +84,7 @@ const Login = () => {
           if (user) {
             user.getIdToken().then((token) => {
               validateUserJWTToken(token).then((data) => {
-                console.log(data);
-                // You can perform further actions after successful sign-up here
+                dispatch(setUserDetails(data));
               });
               navigate("/", {replace: true });
             });

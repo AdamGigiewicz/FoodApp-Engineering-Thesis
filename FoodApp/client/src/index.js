@@ -20,7 +20,7 @@ root.render(
     <React.StrictMode>
         <Router>
         <AnimatePresence>
-        <Provider store={myStore}>
+        <Provider store={myStore} >
         <App />  
         </Provider>
         </AnimatePresence>
