@@ -11,6 +11,7 @@ import {app} from "../config/firebase.config"
 import { validateUserJWTToken } from '../api';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserDetails } from '../context/actions/userActions';
+import { alertInfo, alertWarning } from '../context/actions/alertActions';
 
 
 const Login = () => {
@@ -25,7 +26,8 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const user = useSelector((state) => state.user)
+  const user = useSelector((state) => state.user);
+  const alert = useSelector((state) => state.alert);
 
   useEffect(() => {
     if(user) {
@@ -52,6 +54,7 @@ const Login = () => {
   
   const SignUpWithEmailPass = async () => {
     if (userEmail === "" || password === "" || confirmPassword === "") {
+      dispatch(alertInfo("Wymagane pola nie mogą być puste"))
     } else {
       if (password === confirmPassword) {
         try {
@@ -63,16 +66,15 @@ const Login = () => {
                 validateUserJWTToken(token).then((data) => {
                   dispatch(setUserDetails(data));
                 });
+                navigate("/",{replace: true});
               });
             }
           });
-  
-          console.log("Equal");
         } catch (error) {
           console.error("Error creating user:", error.message);
         }
       } else {
-        
+        dispatch(alertWarning("Hasła się nie zgadzają"))
       }
     }
   };
@@ -92,7 +94,7 @@ const Login = () => {
         });
       });
     } else {
-      //alert message
+      dispatch(alertWarning("Hasła się nie zgadzają"))
     }
   };
   
