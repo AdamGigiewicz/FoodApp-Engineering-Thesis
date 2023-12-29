@@ -1,10 +1,18 @@
-import React from 'react'
-import { NavLink } from 'react-router-dom'
-import {Logo} from "../assets"
-import { isActiveStyles, isNotActiveStyles } from '../utils/styles'
+import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
+import {Logo} from "../assets";
+import { isActiveStyles, isNotActiveStyles } from "../utils/styles";
+import {motion} from "framer-motion";
+import {buttonClick,fadeInOut,slideTop} from "../animations";
+import {MdLogout, MdShoppingCart} from "../assets/icons";
+import {useSelector} from "react-redux";
+import { Link } from "react-router-dom";
 
 const Header = () => {
-  return  <header className="fixed backdrop-blur-md z-50 inset-x-0 top-0 flex items-center justify-between px-12 md:px-20 py-6">
+const user  = useSelector(state => state.user);
+const [isMenu,setIsMenu] = useState(false);
+  return (
+    <header className="fixed backdrop-blur-md z-50 inset-x-0 top-0 flex items-center justify-between px-12 md:px-20 py-6">
     <NavLink to={"/"} className="flex items-center justify-center gap-4">
             <img src={Logo} className="w-12" alt ="" />
             <p className="font-semibold text-xl"> Restauracja Wirtuozeria</p>
@@ -17,8 +25,64 @@ const Header = () => {
             <NavLink className={({isActive}) => isActive ? isActiveStyles : isNotActiveStyles} to={"/services"}>Usługi</NavLink>
             <NavLink className={({isActive}) => isActive ? isActiveStyles : isNotActiveStyles} to={"/aboutUs"}>O nas</NavLink>
         </ul>
+
+        <motion.div {...buttonClick} className="relative cursor-pointer">
+          <MdShoppingCart className="text-3xl text-textColor"/>
+          <div className="w-6 h-6 rounded-full bg-red-500 flex items-center justify-center absolute -top-4 -right-1">
+          <p className="text-primary text-base font-semibold">2</p>
+          </div>
+        </motion.div>
+
+      {user ? (
+        <>
+          <div className="relative cursor-pointer" onMouseEnter={() => setIsMenu(true)}> 
+            <div className="w-12 h-12 rounded-full shadow-md cursor-pointer overflow-hidden flex items-center justify-center">
+              <motion.img className="w-full h-full object-cover" src={user?.picture} whileHover={{scale: 1.15}}
+              referrerPolicy="no-referrer"
+        />
+            </div>
+
+            {isMenu && (
+              <motion.div 
+              {...slideTop}
+              onMouseLeave={() => setIsMenu(false)} className="px-6 py-4 bg-lightOverlay backdrop-blur-md rounded-md shadow-md absolute top-12 right-0 flex flex-col gap-4">
+              <Link 
+              className="hover:text-red-500 text-xl text-textColor" to={"/dashboard/home"}
+              >
+                Panel
+              </Link>
+
+              <Link className="hover:text-red-500 text-xl text-textColor" to={"/profile"}
+              >
+                Mój profil 
+              </Link>
+
+              <Link className="hover:text-red-500 text-xl text-textColor" to={"/user-orders"}
+              >
+                Zamówienia
+              </Link>
+              <hr/>
+              <motion.div {...buttonClick} className="group flex items-center justify-center px-3 py-2 rounded-md shadow-md bg-gray-100 hover:bg-gray-200 gap-3">
+              <MdLogout className="text-2xl text-textColor group-hover::text-heaadingColor"/>
+              <p className="text-textColor text-xl group-hover:text-headingColor">Wyloguj</p>
+              </motion.div>
+            </motion.div>
+            )}
+          </div>
+        </> 
+        ) : (
+          <>
+        <NavLink to= {"/login"}>
+          <motion.button 
+          {...buttonClick} className="px-4 py-2 rounded-md shadow-md bg-lightOverlay border border-red-300 cursor-pointer">
+           Login
+          </motion.button>
+        </NavLink>
+      </>
+    )}
     </nav>
   </header>
-}
+  );
+};
 
-export default Header
+export default Header;
