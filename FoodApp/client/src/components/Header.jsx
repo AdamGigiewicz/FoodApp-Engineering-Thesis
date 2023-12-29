@@ -1,16 +1,30 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import {Logo} from "../assets";
 import { isActiveStyles, isNotActiveStyles } from "../utils/styles";
 import {motion} from "framer-motion";
-import {buttonClick,fadeInOut,slideTop} from "../animations";
+import {buttonClick,slideTop} from "../animations";
 import {MdLogout, MdShoppingCart} from "../assets/icons";
-import {useSelector} from "react-redux";
-import { Link } from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {getAuth} from "firebase/auth"
+import {app} from "../config/firebase.config"
+import { setUserNull } from "../context/actions/userActions";
+
 
 const Header = () => {
 const user  = useSelector(state => state.user);
 const [isMenu,setIsMenu] = useState(false);
+const firebaseAuth = getAuth(app);
+const navigate = useNavigate();
+const dispatch = useDispatch();
+
+const signOut = () => {
+  firebaseAuth.signOut().then(() => {
+    dispatch(setUserNull());
+    navigate("/login", {replace : true});
+  }).catch((err) => console.log(err));
+};
+
   return (
     <header className="fixed backdrop-blur-md z-50 inset-x-0 top-0 flex items-center justify-between px-12 md:px-20 py-6">
     <NavLink to={"/"} className="flex items-center justify-center gap-4">
@@ -62,7 +76,9 @@ const [isMenu,setIsMenu] = useState(false);
                 Zamówienia
               </Link>
               <hr/>
-              <motion.div {...buttonClick} className="group flex items-center justify-center px-3 py-2 rounded-md shadow-md bg-gray-100 hover:bg-gray-200 gap-3">
+              <motion.div {...buttonClick} 
+              onClick={signOut}
+              className="group flex items-center justify-center px-3 py-2 rounded-md shadow-md bg-gray-100 hover:bg-gray-200 gap-3">
               <MdLogout className="text-2xl text-textColor group-hover::text-heaadingColor"/>
               <p className="text-textColor text-xl group-hover:text-headingColor">Wyloguj</p>
               </motion.div>
