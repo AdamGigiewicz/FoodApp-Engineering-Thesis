@@ -7,7 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 import { setUserNull } from "../context/actions/userActions";
 import { app } from "../config/firebase.config";
-
+import {Avatar} from "../assets"
+ 
 
 const DashboardHeader = () => {
 const user = useSelector((state) => state.user);
@@ -54,7 +55,7 @@ const signOut = () => {
           <div className="w-10 h-10 rounded-md shadow-md cursor-pointer overflow-hidden">
             <motion.img
               className="w-full h-full object-cover"
-              src={user?.picture}
+              src={user?.picture ? user?.picture : Avatar}
               whileHover={{ scale: 1.15}}
               referrerPolicy="no-referrer"
               />

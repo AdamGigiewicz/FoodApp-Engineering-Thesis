@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
-import {Logo} from "../assets";
+import {Logo,Avatar} from "../assets";
 import { isActiveStyles, isNotActiveStyles } from "../utils/styles";
 import {motion} from "framer-motion";
 import {buttonClick,slideTop} from "../animations";
@@ -51,7 +51,7 @@ const signOut = () => {
         <>
           <div className="relative cursor-pointer" onMouseEnter={() => setIsMenu(true)}> 
             <div className="w-12 h-12 rounded-full shadow-md cursor-pointer overflow-hidden flex items-center justify-center">
-              <motion.img className="w-full h-full object-cover" src={user?.picture} whileHover={{scale: 1.15}}
+              <motion.img className="w-full h-full object-cover" src={user?.picture ? user?.picture : Avatar} whileHover={{scale: 1.15}}
               referrerPolicy="no-referrer"
         />
             </div>
