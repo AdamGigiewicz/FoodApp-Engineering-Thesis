@@ -1,11 +1,12 @@
-import React from 'react'
+import React from 'react';
+import {DataTable} from '../components';
 
-const DashboardItems = () => {
-  return (
-    <div>
-      
+const DashboardNewItem = () => {
+    return (
+    <div className="flex items-center justify-center gap-4 pt-6 w-full">
+      <DataTable/>
     </div>
-  )
-}
+  );
+};
 
-export default DashboardItems
+export default DashboardNewItem;

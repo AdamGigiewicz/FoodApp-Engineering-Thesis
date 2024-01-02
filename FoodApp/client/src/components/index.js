@@ -12,6 +12,8 @@ export {default as DashboardOrders} from "./DashboardOrders";
 export {default as DashboardItems} from "./DashboardItems";
 export {default as DashboardNewItem} from "./DashboardNewItem";
 export {default as DashboardUsers} from "./DashboardUsers";
+export {default as DataTable} from "./DataTable";
+
 
 export const fadeInOut = {
     initial:{opacity : 0} ,
