@@ -1,6 +1,6 @@
 import React from 'react';
-import DashboardLeftSection from "./DashboardLeftSection";
-import DashboardRightSection from "./DashboardRightSection";
+import DashboardLeftSection from "../components/DashboardLeftSection";
+import DashboardRightSection from "../components/DashboardRightSection";
 
 
 const Dashboard = () => {
