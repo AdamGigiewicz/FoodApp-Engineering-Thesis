@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
 import { statuses } from '../utils/styles';
 import { Spinner } from '../components';
-import { FaCloudUploadAlt } from '../assets/icons';
+import { FaCloudUploadAlt, MdDelete } from '../assets/icons';
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
+import { storage } from '../config/firebase.config';
+import { useDispatch, useSelector } from 'react-redux';
+import { alertDanger, alertNULL, alertSuccess} from "../context/actions/alertActions"
+import { buttonClick } from '../animations';
+import {motion} from "framer-motion";
+
 
 const DashboardNewItem = () => {
   const [itemName, setItemName] = useState("");
@@ -11,11 +18,44 @@ const DashboardNewItem = () => {
   const [progress, setProgress] = useState(null);
   const [imageDownloadUrl, setimageDownloadUrl] = useState(null);
 
+  const alert = useSelector((state) => state.alert);
+  const dispatch = useDispatch();
+
+
   const uploadImage = (e) => {
     setisLoading(true);
     const imageFile = e.target.files[0];
-    console.log(imageFile);
+    const storageRef = ref(storage, `Images/${Date.now()}_${imageFile.name}`)
+
+    const uploadTask  = uploadBytesResumable (storageRef, imageFile);
+    uploadTask.on(
+      "state_changed", 
+      (snapshot) => {
+        setProgress((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
+      }, 
+      (error) => {
+        dispatch(alertDanger(`Error : ${error}`));
+        setTimeout(() => {
+          dispatch(alertNULL())
+        }, 3000);
+      }, 
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setimageDownloadUrl(downloadURL)
+          setisLoading(false)
+          setProgress(null)
+          dispatch(alertSuccess("Zdjęcie zostało dodane poprawnie"));
+          setTimeout(() => {
+          dispatch(alertNULL())
+        }, 3000);
+        });
+      }
+    );
   };
+  
+  const deleteImageFromFirebase = () => {
+
+  }
 
   return (
     <div className="flex items-center justify-center gap-4 pt-6 px-24 w-full">
@@ -51,6 +91,7 @@ const DashboardNewItem = () => {
           {isLoading ? (
             <div className="w-full h-full flex flex-col items-center justify-evenly px-24">
               <Spinner />
+              {progress}
             </div>
           ) : (
             <>
@@ -77,7 +118,25 @@ const DashboardNewItem = () => {
                   </label>
                 </>
               ) : (
-                <></>
+                <>
+                <div className="relative w-full h-full overflow-hidden rounded-md">
+                  <motion.img
+                    whileHover={{scale : 1.15}}
+                    src={imageDownloadUrl}
+                    className="w-full h-full object-cover"
+                  />
+                
+                  <motion.button
+                    {...buttonClick}
+                    type="button"
+                    className="absolute top-3 right-3 p-3 rounded-full bg-red-500 text-xl cursor-pointer outline-none hover: shadow-md duration-500 transition-all easy-in-out"
+                    onClick={() => deleteImageFromFirebase
+                    (imageDownloadUrl)}
+                  >
+                  <MdDelete className="-rotate-0"/>
+                  </motion.button>
+                </div>
+                </>
               )}
             </>
           )}

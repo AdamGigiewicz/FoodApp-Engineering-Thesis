@@ -12,7 +12,7 @@ export const alertWarning = (message) => {
     }
 }
 
-export const alertDamger = (message) => {
+export const alertDanger = (message) => {
     return{ 
         type: "SET_DANGER",
         alert: {type: "danger", message: message}
