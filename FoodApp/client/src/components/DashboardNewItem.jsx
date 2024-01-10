@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { statuses } from '../utils/styles';
 import { Spinner } from '../components';
 import { FaCloudUploadAlt, MdDelete } from '../assets/icons';
-import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
+import { deleteObject, getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { storage } from '../config/firebase.config';
 import { useDispatch, useSelector } from 'react-redux';
 import { alertDanger, alertNULL, alertSuccess} from "../context/actions/alertActions"
@@ -54,8 +54,18 @@ const DashboardNewItem = () => {
   };
   
   const deleteImageFromFirebase = () => {
+    setisLoading(true);
+    const deleteRef = ref(storage, imageDownloadUrl)
 
-  }
+    deleteObject(deleteRef).then(() => {
+      setimageDownloadUrl(null);
+      setisLoading(false);
+      dispatch(alertSuccess("Zdjęcie zostało usunięte poprawnie"));
+          setTimeout(() => {
+          dispatch(alertNULL())
+        }, 3000);
+    });
+  };
 
   return (
     <div className="flex items-center justify-center gap-4 pt-6 px-24 w-full">
@@ -91,8 +101,29 @@ const DashboardNewItem = () => {
           {isLoading ? (
             <div className="w-full h-full flex flex-col items-center justify-evenly px-24">
               <Spinner />
-              {progress}
-            </div>
+              {Math.round (progress > 0) && (
+                <div className="w-full flex flex-col items-center justify-center gap-2">
+                  <div className="flex justify-between w-full">
+                  <span className="text-base font-medium text-textColor">
+                  Progress
+                  </span>
+                    <span className="text-sm font-medium text-textColor">
+                    {Math.round(progress) > 0 && (
+                      <>{`${Math.round(progress)}%`}</>
+                    )}
+                    </span>              
+                  </div>
+              
+              <div className="w-full bg-gray-200 rounded-full h-2.5">
+                  <div className="bg-red-600 h-2.5 rounded-full transition-all duration-300 ease-in-out"
+                  style={{
+                    width:`${Math.round(progress)}%`
+                  }}
+                  ></div>
+                </div>
+               </div>
+              )}
+        </div>
           ) : (
             <>
               {!imageDownloadUrl ? (
