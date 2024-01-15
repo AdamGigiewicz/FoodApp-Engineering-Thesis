@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { alertDanger, alertNULL, alertSuccess} from "../context/actions/alertActions"
 import { buttonClick } from '../animations';
 import {motion} from "framer-motion";
+import { addNewProduct } from '../api';
 
 
 const DashboardNewItem = () => {
@@ -67,6 +68,26 @@ const DashboardNewItem = () => {
     });
   };
 
+  const submitNewData = () => {
+    const data = {
+      product_name: itemName,
+      product_category: category,
+      product_price: price,
+      imageURL:imageDownloadUrl
+    };
+    addNewProduct(data).then((res) => {
+      dispatch(alertSuccess("Nowe danie zostało dodane"));
+      setTimeout(() => {
+        dispatch(alertNULL())
+      }, 3000);
+      setimageDownloadUrl(null);
+      setItemName("");
+      setPrice("");
+      setCategory(null);
+    });
+  };
+
+
   return (
     <div className="flex items-center justify-center gap-4 pt-6 px-24 w-full">
       <div className="border border-gray-300 rounded-md p-4 w-full flex flex-col items-center justify-center gap-4">
@@ -123,7 +144,9 @@ const DashboardNewItem = () => {
                 </div>
                </div>
               )}
-        </div>
+
+          </div>
+        
           ) : (
             <>
               {!imageDownloadUrl ? (
@@ -172,6 +195,13 @@ const DashboardNewItem = () => {
             </>
           )}
         </div>
+        <motion.button
+        onClick={submitNewData}
+        {...buttonClick}
+        className="w-9/12 py-2 rounded-md  text-primary hover: bg-red-500 cursor-pointer"
+      >
+        Save
+      </motion.button>
       </div>
     </div>
   );
