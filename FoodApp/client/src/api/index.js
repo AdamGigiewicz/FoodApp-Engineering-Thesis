@@ -14,7 +14,6 @@ export const validateUserJWTToken = async (token) => {
 
 };
 
-//Add new product
 export const addNewProduct = async (data) => {
     try{
         const res = await axios.post(`${baseURL}/api/products/create`, {...data})
@@ -22,14 +21,4 @@ export const addNewProduct = async (data) => {
     } catch(err){
         return null;
     }
-};
-
-//Get the all products
-export const getNewProducts = async () => {
-    try{
-        const res = await axios.get(`${baseURL}/api/products/all`);
-        return res.data.data
-    } catch(err){
-        return null;
-    }
-};
+}

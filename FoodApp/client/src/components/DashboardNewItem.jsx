@@ -9,7 +9,6 @@ import { alertDanger, alertNULL, alertSuccess} from "../context/actions/alertAct
 import { buttonClick } from '../animations';
 import {motion} from "framer-motion";
 import { addNewProduct } from '../api';
-import {getAllProducts, setAllProducts} from "../context/actions/productActions"
 
 
 const DashboardNewItem = () => {
@@ -85,9 +84,6 @@ const DashboardNewItem = () => {
       setItemName("");
       setPrice("");
       setCategory(null);
-    });
-    getAllProducts().then(data => {
-      dispatch(setAllProducts(data));
     });
   };
 

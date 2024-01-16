@@ -1,7 +1,6 @@
 const router = require("express").Router();
 const admin = require("firebase-admin");
 const db = admin.firestore();
-db.settings({ignoreUndefinedProperties: true});
 
 router.post("/create", async (req, res) => {
     try {
@@ -19,27 +18,6 @@ router.post("/create", async (req, res) => {
         return res({success: false, msg: `Error: ${err}`});
     }
 
-});
-
-
-//get all products
-router.get('/all', async (req,res)=> {
-    (async () => {
-        try{
-            let query = db.collection("products")
-            let response = [];
-            await query.get().then(querysnap => {
-                let docs = querysnap.docs;
-                docs.map(doc => {
-                    response.push({...doc.data()});
-                })
-                return response;
-            });
-            return res.status(200).send({success: true, data: response});
-        }catch(err){
-            return res({success: false, msg: `Error: ${err}`});
-        }
-    })();
 });
 
 
