@@ -8,7 +8,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { alertDanger, alertNULL, alertSuccess} from "../context/actions/alertActions"
 import { buttonClick } from '../animations';
 import {motion} from "framer-motion";
-import { addNewProduct } from '../api';
+import { addNewProduct, getAllProducts } from '../api';
+import {setAllProducts} from "../context/actions/productActions";
 
 
 const DashboardNewItem = () => {
@@ -76,6 +77,7 @@ const DashboardNewItem = () => {
       imageURL:imageDownloadUrl
     };
     addNewProduct(data).then((res) => {
+      console.log(res)
       dispatch(alertSuccess("Nowe danie zostało dodane"));
       setTimeout(() => {
         dispatch(alertNULL())
@@ -85,6 +87,9 @@ const DashboardNewItem = () => {
       setPrice("");
       setCategory(null);
     });
+    getAllProducts().then(data => {
+      dispatch(setAllProducts(data))
+    })
   };
 
 
